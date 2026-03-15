@@ -36,7 +36,9 @@ function goodApp() {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    const controller = new AbortController() // добавили аборт контроллер для отмены запроса, когда он уже не нужен + к оптимизации
+    const controller = new AbortController() // добавили контроллер, это + к оптимизации
+    // предотвращает race condition и утечку памяти
+    // если компонент размонтировался ДО ответа сервера, отменяем запрос, чтобы не обновлять стейт несуществующего компонента
 
     fetch('/api/users', { signal: controller.signal }) // создаем контроллер на запрос
       .then(res => res.json())
