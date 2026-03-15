@@ -1,6 +1,23 @@
+// Замыкание - это функция, которая запоминает лексическое окружение, в котором была создана, даже после того как внешняя функция завершила свою работу
+
+function makeCounter() {
+  let count = 0         // это и есть замыкание, переменная живет
+  return function() {
+    return ++count
+  }
+}
+
+const counter = makeCounter()
+counter() // 1
+counter() // 2
+counter() // 3
+// count живёт в памяти пока живёт counter
+// аналогия: counter - рюкзак, count - книжки, которые положены в рюкзак
+
+
+// Задача 1
 // Нужно написать функцию счетчика createCounter(start, step)
 // Использовать замыкание 
-
 const counter = createCounter(10, 2)
 
 counter.increment() // 12
@@ -23,3 +40,12 @@ function createCounter(start, step) {
     getValue() { return count }
   }
 }
+
+// Задача 2
+// Что выведет в консоль 
+for (var i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i), 0)
+}
+// Ответ: 3, 3, 3 — так как все колбэки замкнуты на одну переменную i
+// i обьявлена через var, а у var - функциональная область видимости
+// Фикс: нужно заменить var на let, либо обернуть в IIFE, чтобы получить 0, 1, 2
