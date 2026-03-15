@@ -22,3 +22,19 @@ const loadUser = (id) => new Promise((resolve, reject) => {
     .then(data => resolve(data))
     .catch((err) => reject(err))
 })
+
+
+// Задача написать запрос, который будет выбрасывать ошибку на последней попытке
+
+async function fetchWithRetry(url, retries) { // используем async/await для запроса и обработки try/catch
+  for (let i = 0; i < retries; i++) {         // запускаем цикл с количеством попыток
+    try {
+      const result = await fetch(url)         // делаем запрос
+      return result.json()                    // если успешно - возвращаем ответ
+    } catch(err) {                   
+      if (i === retries - 1) {                // если это последняя попытка, то бросаем ошибку
+        throw new Error(err.message)
+      }                                       // если нет, цикл продолжается
+    }
+  }
+}
