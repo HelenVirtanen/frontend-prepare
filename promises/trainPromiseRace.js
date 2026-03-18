@@ -4,10 +4,15 @@
 // если нет - выбросить ошибку
 
 function withTimeout(promise, ms) {
-  return Promise.race([
-    promise,
-    new Promise((_, reject) =>
+  const timeout = new Promise((_, reject) =>             // создаем промис таймаут, resolve не нужен, так как этот промис всегда неуспешен
       setTimeout(() => reject(new Error('Timeout')), ms)
     )
-  ]);
-}
+  return Promise.race([promise, timeout]); // race - метод, который возвращает первый завершившийся промис, успешный/неуспешный
+}                                          // получается в "гонке" участвуют два промиса - основной и промис-таймер
+                                           // если основной выполнится раньше таймера - получаем его результат
+                                           // если таймер сработает раньше - получаем сообщение об ошибке
+
+// Пример
+withTimeout(fetchUser(1), 3000)
+  .then(data => console.log('Success', data))
+  .catch(err => console.error('Error Timeout: ', err.message))
